@@ -1,0 +1,16 @@
+replicaCount: 5
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 512Mi
+
+autoscaling:
+  minReplicas: 5
+  maxReplicas: 40
+
+ingress:
+  host: orders.example.com

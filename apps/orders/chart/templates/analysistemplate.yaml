@@ -1,0 +1,24 @@
+# Gates canary/blue-green promotion on the Prometheus success rate.
+# If success rate < 99% over the window, the Rollout auto-aborts.
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: success-rate
+  labels:
+    {{- include "orders.labels" . | nindent 4 }}
+spec:
+  args:
+    - name: service
+  metrics:
+    - name: success-rate
+      interval: 1m
+      count: 5
+      successCondition: result[0] >= 0.99
+      failureLimit: 2
+      provider:
+        prometheus:
+          address: http://prometheus-server.monitoring.svc:80
+          query: |
+            sum(rate(http_requests_total{service="{{ "{{args.service}}" }}",code!~"5.."}[2m]))
+            /
+            sum(rate(http_requests_total{service="{{ "{{args.service}}" }}"}[2m]))

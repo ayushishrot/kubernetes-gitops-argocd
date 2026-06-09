@@ -1,0 +1,34 @@
+# Standalone blue-green Rollout: a full preview stack is promoted to active
+# only after the pre-promotion analysis passes.
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: orders
+  namespace: orders
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+    spec:
+      containers:
+        - name: orders
+          image: ghcr.io/ayushishrot/orders:1.4.2
+          ports:
+            - containerPort: 8080
+  strategy:
+    blueGreen:
+      activeService: orders-active
+      previewService: orders-preview
+      autoPromotionEnabled: false
+      scaleDownDelaySeconds: 120
+      prePromotionAnalysis:
+        templates:
+          - templateName: success-rate
+        args:
+          - name: service
+            value: orders-preview

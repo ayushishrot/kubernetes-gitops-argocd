@@ -1,0 +1,9 @@
+apiVersion: v2
+name: orders
+description: Sample event-driven orders service deployed via Argo CD + Argo Rollouts
+type: application
+version: 0.3.0
+appVersion: "1.4.2"
+maintainers:
+  - name: Ayushi Shrotriya
+    email: ayushishrot@gmail.com

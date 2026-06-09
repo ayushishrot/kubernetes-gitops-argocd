@@ -1,0 +1,45 @@
+# Standalone canary Rollout (plain manifest variant, no Helm) for reference.
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: orders
+  namespace: orders
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+    spec:
+      containers:
+        - name: orders
+          image: ghcr.io/ayushishrot/orders:1.4.2
+          ports:
+            - containerPort: 8080
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 500m, memory: 256Mi }
+  strategy:
+    canary:
+      canaryService: orders-canary
+      stableService: orders-stable
+      maxSurge: "25%"
+      maxUnavailable: 0
+      analysis:
+        templates:
+          - templateName: success-rate
+        startingStep: 2
+        args:
+          - name: service
+            value: orders-canary
+      steps:
+        - setWeight: 10
+        - pause: { duration: 2m }
+        - setWeight: 25
+        - pause: { duration: 5m }
+        - setWeight: 50
+        - pause: { duration: 5m }
+        - setWeight: 100

@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "orders.name" . }}-stable
+  labels:
+    {{- include "orders.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "orders.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "orders.name" . }}-canary
+  labels:
+    {{- include "orders.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "orders.selectorLabels" . | nindent 4 }}
+{{- if .Values.serviceAccount.create }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "orders.serviceAccountName" . }}
+  labels:
+    {{- include "orders.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.serviceAccount.annotations | nindent 4 }}
+{{- end }}
