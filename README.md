@@ -28,7 +28,7 @@ flowchart LR
 
 Argo CD watches this repo and reconciles the cluster to match. The **root**
 Application (`bootstrap/root-app.yaml`) renders every Application under
-`apps/` and `platform/` — the *app-of-apps* pattern — so a single `kubectl apply`
+`apps/` and `platform/`  the *app-of-apps* pattern  so a single `kubectl apply`
 bootstraps the whole platform.
 
 ## Repo layout

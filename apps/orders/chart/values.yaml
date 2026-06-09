@@ -24,7 +24,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 70
   targetMemoryUtilizationPercentage: 80
 
-# Canary | BlueGreen — drives which Rollout strategy template renders.
+# Canary | BlueGreen  drives which Rollout strategy template renders.
 rolloutStrategy: Canary
 
 serviceAccount:
