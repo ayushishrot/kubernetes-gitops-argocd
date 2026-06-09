@@ -1,0 +1,6 @@
+.DS_Store
+.idea/
+.vscode/
+*.tgz
+charts/*/charts/
+*.local.yaml
