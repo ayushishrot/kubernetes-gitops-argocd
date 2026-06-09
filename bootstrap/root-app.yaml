@@ -1,0 +1,24 @@
+# App-of-apps: this single Application renders every Application defined
+# under platform/ and apps/, so the whole platform bootstraps from one apply.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: platform
+  source:
+    repoURL: https://github.com/ayushishrot/kubernetes-gitops-argocd
+    targetRevision: main
+    path: bootstrap/applications
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
